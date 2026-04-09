@@ -30,13 +30,13 @@ public class DictionaryUtil {
 	
 	private static Trie<String,WordEntry> dictionary;
 	
-	private static HashMap josas;
-	
-	private static HashMap eomis;
-	
-	private static HashMap prefixs;
-	
-	private static HashMap suffixs;
+	private static HashMap<String, String> josas;
+
+	private static HashMap<String, String> eomis;
+
+	private static HashMap<String, String> prefixs;
+
+	private static HashMap<String, String> suffixs;
 	
 	private static HashMap<String,WordEntry> uncompounds;
 	
@@ -175,7 +175,7 @@ public class DictionaryUtil {
 		
 		try {
 			if(uncompounds==null) {
-				uncompounds = new HashMap();
+				uncompounds = new HashMap<>();
 				List<String> lines = FileUtil.readLines(KoreanEnv.getInstance().getValue(KoreanEnv.FILE_UNCOMPOUNDS),"UTF-8");	
 				for(String compound: lines) {		
 					String[] infos = StringUtil.split(compound,":");
@@ -195,7 +195,7 @@ public class DictionaryUtil {
 		
 		try {
 			if(cjwords==null) {
-				cjwords = new HashMap();
+				cjwords = new HashMap<>();
 				List<String> lines = FileUtil.readLines(KoreanEnv.getInstance().getValue(KoreanEnv.FILE_CJ),"UTF-8");	
 				for(String cj: lines) {		
 					String[] infos = StringUtil.split(cj,":");
@@ -212,7 +212,7 @@ public class DictionaryUtil {
 	
 	public static boolean existJosa(String str) throws MorphException {
 		if(josas==null) {
-			josas = new HashMap();
+			josas = new HashMap<>();
 			readFile(josas,KoreanEnv.FILE_JOSA);
 		}	
 		if(josas.get(str)==null) return false;
@@ -221,7 +221,7 @@ public class DictionaryUtil {
 	
 	public static boolean existEomi(String str)  throws MorphException {
 		if(eomis==null) {
-			eomis = new HashMap();
+			eomis = new HashMap<>();
 			readFile(eomis,KoreanEnv.FILE_EOMI);
 		}
 
@@ -231,7 +231,7 @@ public class DictionaryUtil {
 	
 	public static boolean existPrefix(String str)  throws MorphException {
 		if(prefixs==null) {
-			prefixs = new HashMap();
+			prefixs = new HashMap<>();
 			readFile(prefixs,KoreanEnv.FILE_PREFIX);
 		}
 
@@ -241,7 +241,7 @@ public class DictionaryUtil {
 	
 	public static boolean existSuffix(String str)  throws MorphException {
 		if(suffixs==null) {
-			suffixs = new HashMap();
+			suffixs = new HashMap<>();
 			readFile(suffixs,KoreanEnv.FILE_SUFFIX);
 		}
 
@@ -278,7 +278,7 @@ public class DictionaryUtil {
 	 * @param type	1: josa, 2: eomi
 	 * @throws MorphException
 	 */
-	private static synchronized void readFile(HashMap map, String dic) throws MorphException {		
+	private static synchronized void readFile(HashMap<String, String> map, String dic) throws MorphException {		
 		
 		String path = KoreanEnv.getInstance().getValue(dic);
 
@@ -294,8 +294,8 @@ public class DictionaryUtil {
 		}
 	}
 	
-	private static List compoundArrayToList(String source, String[] arr) {
-		List list = new ArrayList();
+	private static List<CompoundEntry> compoundArrayToList(String source, String[] arr) {
+		List<CompoundEntry> list = new ArrayList<>();
 		for(String str: arr) {
 			CompoundEntry ce = new CompoundEntry(str);
 			ce.setOffset(source.indexOf(str));
