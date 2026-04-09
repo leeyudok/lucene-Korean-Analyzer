@@ -44,7 +44,9 @@ public class KoreanStopFilterTest extends AnalyzerTestUtil {
 		
 		dictionaryFactory.setStopWordDictionaryMap(stopWordDictionaryMap);
 
-		TokenStream stream = new KoreanStopFilter(new KoreanCharacterTokenizer(reader));
+		KoreanCharacterTokenizer tokenizer = new KoreanCharacterTokenizer();
+		tokenizer.setReader(reader);
+		TokenStream stream = new KoreanStopFilter(tokenizer);
 		stream.reset();
 		
 		List<TestToken> extractedTokens = collectExtractedNouns(stream);

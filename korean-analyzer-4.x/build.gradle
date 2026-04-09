@@ -1,8 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-
-sourceCompatibility = 1.7
+apply plugin: 'maven-publish'
 
 group = 'com.tistory.devyongsik'
 version = '0.7-SNAPSHOT'
@@ -12,45 +9,36 @@ repositories {
 }
 
 def versions = [
-    lucene : "4.4.0",
-    slf4j : "1.6.6",
-    logback : "1.0.13"
+    lucene  : "9.10.0",
+    slf4j   : "2.0.13",
+    logback : "1.5.6"
 ]
 
 dependencies {
-	compile(
-		[group: 'junit', name: 'junit', version: '4.4'],
-		[group: 'org.slf4j', name: 'slf4j-api', version: '1.6.6'],
-		[group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.6'],
+	implementation(
+		[group: 'org.slf4j', name: 'slf4j-api', version: "${versions.slf4j}"],
 		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
-        [group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: "${versions.lucene}"],
-        [group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
-        [group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"],
-        [group: 'ch.qos.logback', name: 'logback-core', version: '1.0.13'],
-		[group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'],
-		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6'],
-		[group: 'com.google.guava', name: 'guava', version: 'r09']
+		[group: 'org.apache.lucene', name: 'lucene-analysis-common', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"],
+		[group: 'ch.qos.logback', name: 'logback-core', version: "${versions.logback}"],
+		[group: 'ch.qos.logback', name: 'logback-classic', version: "${versions.logback}"],
+		[group: 'com.google.guava', name: 'guava', version: '33.2.0-jre']
 	)
 
-	testRuntime(
-        [group: 'junit', name: 'junit', version: '4.4'],
-        [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.6'],
-        [group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.6'],
-        [group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
-		[group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: "${versions.lucene}"],
-        [group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
-        [group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"],
-        [group: 'ch.qos.logback', name: 'logback-core', version: '1.0.13'],
-		[group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'],
-		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6'],
-		[group: 'com.google.guava', name: 'guava', version: 'r09']
-    )
-
+	testImplementation(
+		[group: 'junit', name: 'junit', version: '4.13.2'],
+		[group: 'org.slf4j', name: 'slf4j-api', version: "${versions.slf4j}"],
+		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-analysis-common', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"]
+	)
 }
 
 task copyDictionary(type: Copy) {
 	from 'src/main/java'
-	into 'target/classes/main'
+	into sourceSets.main.output.classesDirs.asPath
 	include '**/*.properties'
 	include '**/*.dic'
 	include '**/*.jflex'
@@ -59,28 +47,19 @@ task copyDictionary(type: Copy) {
 	includeEmptyDirs = false
 }
 
-eclipse {
-	classpath {
-		downloadSources=true
+publishing {
+	publications {
+		maven(MavenPublication) {
+			from components.java
+		}
 	}
-	
-	jdt {
-		file {
-			withProperties { 
-				properties -> properties.setProperty("encoding//src/main/java", "utf-8")
-					      properties.setProperty("encoding//src/main/resources", "utf-8")
-					      properties.setProperty("encoding//src/test/java", "utf-8")
-					      properties.setProperty("encoding//src/test/resources", "utf-8")
-			}		
+	repositories {
+		maven {
+			url = uri("file://${System.getProperty('user.home')}/Programming/need4spd-maven-repo/snapshots")
 		}
 	}
 }
 
-uploadArchives {
-	repositories.mavenDeployer {
-		repository(url: "file:///Users/need4spd/Programming/need4spd-maven-repo/snapshots")
-		//repository(url: "file:///Programming/Java/need4spd-maven-repo/snapshots")
-	}
-}
-
+tasks.compileJava.dependsOn copyDictionary
+tasks.compileTestJava.dependsOn copyDictionary
 tasks.test.dependsOn copyDictionary

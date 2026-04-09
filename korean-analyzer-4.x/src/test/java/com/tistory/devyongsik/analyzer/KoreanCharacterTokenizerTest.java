@@ -25,7 +25,7 @@ public class KoreanCharacterTokenizerTest extends AnalyzerTestUtil {
 	
 	private Set<TestToken> tokenizedToken = new HashSet<TestToken>();
 	private StringReader content = new StringReader("삼성전자absc1234엠피3mp3버전1.2  띄어쓰기");
-	private KoreanCharacterTokenizer tokenizer = new KoreanCharacterTokenizer(content);
+	private KoreanCharacterTokenizer tokenizer = new KoreanCharacterTokenizer();
 
 	@Before
 	public void setUp() throws IOException {
@@ -40,7 +40,8 @@ public class KoreanCharacterTokenizerTest extends AnalyzerTestUtil {
 		tokenizedToken.add(getToken("1234", 8, 12));
 		tokenizedToken.add(getToken("absc", 4, 8));
 		tokenizedToken.add(getToken("삼성전자", 0, 4));
-		
+
+		tokenizer.setReader(content);
 		tokenizer.reset();
 	}
 

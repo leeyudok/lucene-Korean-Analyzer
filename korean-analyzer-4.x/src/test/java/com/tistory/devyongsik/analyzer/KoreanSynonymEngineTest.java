@@ -47,7 +47,9 @@ public class KoreanSynonymEngineTest extends AnalyzerTestUtil {
 		nouns.add(getToken("노트북피씨", 0, 3));
 		nouns.add(getToken("notebook", 0, 3));
 		
-		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
+		KoreanCharacterTokenizer tokenizer = new KoreanCharacterTokenizer();
+		tokenizer.setReader(reader);
+		TokenStream stream = new KoreanNounFilter(tokenizer, engines);
 		stream.reset();
 		
 		List<TestToken> extractedTokens = collectExtractedNouns(stream);
