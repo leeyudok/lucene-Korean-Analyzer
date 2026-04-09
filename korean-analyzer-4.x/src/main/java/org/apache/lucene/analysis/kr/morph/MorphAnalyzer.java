@@ -62,11 +62,11 @@ public class MorphAnalyzer {
 		cnAnalyzer.setExactMach(is);
 	}
 	
-	public List analyze(String input) throws MorphException {	
+	public List<AnalysisOutput> analyze(String input) throws MorphException {
 
-		if(input.endsWith("."))	
+		if(input.endsWith("."))
 			return analyze(input.substring(0,input.length()-1), POS_END);
-		
+
 		return analyze(input, POS_MID);
 	}
 	
@@ -77,9 +77,9 @@ public class MorphAnalyzer {
 	 * @return
 	 * @throws MorphException
 	 */
-	public List analyze(String input, int pos) throws MorphException {		
+	public List<AnalysisOutput> analyze(String input, int pos) throws MorphException {
 
-		List<AnalysisOutput> candidates = new ArrayList();				
+		List<AnalysisOutput> candidates = new ArrayList<>();
 		boolean isVerbOnly = MorphUtil.hasVerbOnly(input);
 
 		analysisByRule(input, candidates);		
@@ -111,13 +111,13 @@ public class MorphAnalyzer {
 			Collections.sort(candidates,new AnalysisOutputComparator());	
 		}
 
-		List<AnalysisOutput> results = new ArrayList();	
-		
+		List<AnalysisOutput> results = new ArrayList<>();
+
 		boolean hasCorrect = false;
 		boolean hasCorrectNoun = false;
 		boolean correctCnoun = false;
-		
-		HashMap stems = new HashMap();
+
+		HashMap<String, AnalysisOutput> stems = new HashMap<>();
 		AnalysisOutput noun = null;
 		
 		double ratio = 0;
@@ -171,7 +171,7 @@ public class MorphAnalyzer {
 		return results;
 	}
 	
-	private void analysisByRule(String input, List candidates) throws MorphException {
+	private void analysisByRule(String input, List<AnalysisOutput> candidates) throws MorphException {
 	
 		boolean josaFlag = true;
 		boolean eomiFlag = true;
@@ -203,7 +203,7 @@ public class MorphAnalyzer {
 		}
 	}
 	
-	private void addResults(AnalysisOutput o, List results, HashMap<String, AnalysisOutput> stems) {
+	private void addResults(AnalysisOutput o, List<AnalysisOutput> results, HashMap<String, AnalysisOutput> stems) {
 		AnalysisOutput old = stems.get(o.getStem());
 		if(old==null||old.getPos()!=o.getPos()) {
 			results.add(o);
@@ -257,7 +257,7 @@ public class MorphAnalyzer {
 	 * @param candidates
 	 * @throws MorphException
 	 */
-	public void analysisWithJosa(String stem, String end, List candidates) throws MorphException {
+	public void analysisWithJosa(String stem, String end, List<AnalysisOutput> candidates) throws MorphException {
 	
 		if(stem==null||stem.length()==0) return;	
 		
@@ -305,7 +305,7 @@ public class MorphAnalyzer {
 	 * @param candidates
 	 * @throws CloneNotSupportedException 
 	 */
-	public void analysisWithEomi(String stem, String end, List candidates) throws MorphException {
+	public void analysisWithEomi(String stem, String end, List<AnalysisOutput> candidates) throws MorphException {
 		
 		String[] morphs = EomiUtil.splitEomi(stem, end);
 		if(morphs[0]==null) return; // 어미가 사전에 등록되어 있지 않다면....

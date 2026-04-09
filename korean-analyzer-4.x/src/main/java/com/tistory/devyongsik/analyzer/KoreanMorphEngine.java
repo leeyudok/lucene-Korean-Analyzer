@@ -95,14 +95,14 @@ public class KoreanMorphEngine implements Engine {
 		for(AnalysisOutput output : outputs) {
 			//명사(N) 만 처리
 			if(output.getPos()==PatternConstants.POS_NOUN) {
-				map.put(output.getStem(), new Integer(1));
+				map.put(output.getStem(), 1);
 				//점수가 100점이 아니면 n-gram 처리
 				if(output.getScore()==AnalysisOutput.SCORE_CORRECT) {
 					List<CompoundEntry> cnouns = output.getCNounList();
 
 					for(CompoundEntry cnoun : cnouns) {
 						if(cnoun.getWord().length()>1) {
-							map.put(cnoun.getWord(),  new Integer(0));
+							map.put(cnoun.getWord(), 0);
 						}
 					}
 				}
