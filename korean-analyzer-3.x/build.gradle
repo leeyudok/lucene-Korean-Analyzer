@@ -1,10 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'eclipse-wtp'
-apply plugin: 'maven'
-
-
-sourceCompatibility = 1.7
 
 group = 'com.tistory.devyongsik'
 version = '0.6-SNAPSHOT'
@@ -18,32 +12,23 @@ def versions = [
 ]
 
 dependencies {
-	compile(
-		[group: 'junit', name: 'junit', version: '4.4'],
+	implementation(
+		[group: 'junit', name: 'junit', version: '4.13.2'],
 		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
-		[group: 'org.slf4j', name: 'slf4j-api', version: '1.6.6'],
-		[group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.6'],
-		[group: 'ch.qos.logback', name: 'logback-core', version: '1.0.13'],
-		[group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'],
-		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6'],
-		[group: 'com.google.guava', name: 'guava', version: 'r09']
+		[group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'],
+		[group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'],
+		[group: 'ch.qos.logback', name: 'logback-core', version: '1.2.13'],
+		[group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.13'],
+		[group: 'com.google.guava', name: 'guava', version: '33.2.0-jre']
 	)
 
-	testRuntime(
-        [group: 'junit', name: 'junit', version: '4.4'],
-        [group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
-        [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.6'],
-        [group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.6'],
-        [group: 'ch.qos.logback', name: 'logback-core', version: '1.0.13'],
-		[group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'],
-		[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.1.6'],
-		[group: 'com.google.guava', name: 'guava', version: 'r09']
+	testImplementation(
+        [group: 'junit', name: 'junit', version: '4.13.2']
     )
 }
 
 test {
 	jvmArgs = ['-ea', '-Xmx256m']
-	logging.captureStandardOutput(LogLevel.INFO)
 }
 
 task copyDictionary(type: Copy) {
@@ -55,30 +40,6 @@ task copyDictionary(type: Copy) {
 	include '**/*.txt'
 
 	includeEmptyDirs = false
-}
-
-eclipse {
-	classpath {
-		downloadSources=true
-	}
-	
-	jdt {
-		file {
-			withProperties { 
-				properties -> properties.setProperty("encoding//src/main/java", "utf-8")
-					      properties.setProperty("encoding//src/main/resources", "utf-8")
-					      properties.setProperty("encoding//src/test/java", "utf-8")
-					      properties.setProperty("encoding//src/test/resources", "utf-8")
-			}		
-		}
-	}
-}
-
-uploadArchives {
-	repositories.mavenDeployer {
-		repository(url: "file:///Users/need4spd/Programming/need4spd-maven-repo/snapshots")
-		//repository(url: "file:///Programming/Java/need4spd-maven-repo/snapshots")
-	}
 }
 
 tasks.test.dependsOn copyDictionary

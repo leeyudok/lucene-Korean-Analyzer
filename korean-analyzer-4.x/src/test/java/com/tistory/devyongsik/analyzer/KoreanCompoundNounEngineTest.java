@@ -18,6 +18,7 @@ import com.tistory.devyongsik.analyzer.util.TestToken;
 public class KoreanCompoundNounEngineTest extends AnalyzerTestUtil {
 	private List<TestToken> compondNouns = Lists.newArrayList();
 	private StringReader reader = new StringReader("월드컵조직위원회분과위");
+	private KoreanCharacterTokenizer tokenizer = new KoreanCharacterTokenizer();
 	private List<Engine> engines = new ArrayList<Engine>();
 	private DictionaryFactory dictionaryFactory;
 
@@ -47,8 +48,9 @@ public class KoreanCompoundNounEngineTest extends AnalyzerTestUtil {
 		
 		createEngines();
 		
-		TokenStream stream = new KoreanNounFilter(new KoreanCharacterTokenizer(reader), engines);
-		
+		tokenizer.setReader(reader);
+		TokenStream stream = new KoreanNounFilter(tokenizer, engines);
+
 		stream.reset();
 		
 		List<TestToken> extractedTokens = collectExtractedNouns(stream);

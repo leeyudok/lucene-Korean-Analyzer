@@ -1,5 +1,4 @@
 ext {
-    javaVersion = '1.7'
     javaEncoding = 'UTF-8'
     tmpDir = System.getProperty('java.io.tmpdir')
 }
@@ -9,12 +8,16 @@ subprojects {
 
     buildDir = 'target'
 
-    task hello << {
-        println "${project.name}"
+    tasks.register('hello') {
+        doLast {
+            println "${project.name}"
+        }
     }
 
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
     [compileJava, compileTestJava]*.options*.encoding = javaEncoding
 
     repositories {

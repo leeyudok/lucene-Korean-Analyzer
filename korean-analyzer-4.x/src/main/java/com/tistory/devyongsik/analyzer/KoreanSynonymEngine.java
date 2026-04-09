@@ -16,7 +16,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.AttributeSource;
 import org.apache.lucene.util.AttributeSource.State;
 import org.slf4j.Logger;
@@ -57,9 +57,8 @@ public class KoreanSynonymEngine implements Engine {
 		searcherManager.maybeRefresh();
 		IndexSearcher indexSearcher = searcherManager.acquire();
 		
-		TopScoreDocCollector collector = TopScoreDocCollector.create(5 * 5, false);
-		indexSearcher.search(query, collector);
-		ScoreDoc[] hits = collector.topDocs().scoreDocs;
+		TopDocs topDocs = indexSearcher.search(query, 25);
+		ScoreDoc[] hits = topDocs.scoreDocs;
 
 		if(logger.isDebugEnabled()) {
 			logger.debug("대상 word : " + word);
