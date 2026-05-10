@@ -8,7 +8,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 
 /**
- * @author need4spd, need4spd@cplanet.co.kr, 2011. 8. 31.
+ * @author need4spd, 2011. 8. 31.
  *
  */
 public class KoreanAnalyzer extends Analyzer {

@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author need4spd, need4spd@cplanet.co.kr, 2011. 10. 14.
+ * @author need4spd, 2011. 10. 14.
  *
  */
 public class KoreanMorphEngine implements Engine {

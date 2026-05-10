@@ -10,7 +10,7 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.util.Version;
 
 /**
- * @author need4spd, need4spd@cplanet.co.kr, 2011. 8. 31.
+ * @author need4spd, 2011. 8. 31.
  *
  */
 public class KoreanAnalyzer extends ReusableAnalyzerBase {

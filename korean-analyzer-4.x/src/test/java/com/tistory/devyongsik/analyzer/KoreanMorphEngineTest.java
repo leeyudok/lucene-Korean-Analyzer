@@ -12,7 +12,7 @@ import com.tistory.devyongsik.analyzer.util.AnalyzerTestUtil;
 import com.tistory.devyongsik.analyzer.util.TestToken;
 
 /**
- * @author need4spd, need4spd@cplanet.co.kr, 2011. 10. 14.
+ * @author need4spd, 2011. 10. 14.
  *
  */
 public class KoreanMorphEngineTest extends AnalyzerTestUtil {
