@@ -19,6 +19,10 @@ korean-analyzer-9.x
 ./gradlew clean test
 ```
 
+## Resources
+
+Analyzer dictionaries and properties live under `korean-analyzer-9.x/src/main/resources` and are included by Gradle's standard resource processing.
+
 ## Analyzer Pipeline
 
 ```text

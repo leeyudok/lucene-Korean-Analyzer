@@ -41,17 +41,6 @@ dependencies {
 	)
 }
 
-task copyDictionary(type: Copy) {
-	from 'src/main/java'
-	into sourceSets.main.output.classesDirs.asPath
-	include '**/*.properties'
-	include '**/*.dic'
-	include '**/*.jflex'
-	include '**/*.txt'
-
-	includeEmptyDirs = false
-}
-
 publishing {
 	publications {
 		maven(MavenPublication) {
@@ -65,10 +54,6 @@ publishing {
 		}
 	}
 }
-
-tasks.compileJava.dependsOn copyDictionary
-tasks.compileTestJava.dependsOn copyDictionary
-tasks.test.dependsOn copyDictionary
 
 jacoco {
 	toolVersion = '0.8.12'

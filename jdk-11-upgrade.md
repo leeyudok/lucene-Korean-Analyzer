@@ -22,6 +22,7 @@
 - Lucene 9의 `ByteBuffersDirectory`, `IndexWriterConfig`, `IndexOptions` API 사용
 - `logback.xml` 기반 로깅 설정 사용
 - 사전 리소스 누락 시 명확한 예외 처리 추가
+- 사전/설정 파일을 `src/main/resources`로 이동하고 Gradle 표준 리소스 처리 사용
 - 복합명사 offset 계산 보정
 
 ## 검증 명령
