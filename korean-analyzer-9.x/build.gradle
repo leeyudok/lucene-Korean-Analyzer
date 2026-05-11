@@ -1,0 +1,117 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'jacoco'
+
+group = 'com.tistory.devyongsik'
+version = '0.9-SNAPSHOT'
+
+base {
+	archivesName = 'korean-analyzer-9.x'
+}
+
+repositories {
+	mavenCentral()
+}
+
+def versions = [
+    lucene  : "9.10.0",
+    slf4j   : "2.0.13",
+    logback : "1.5.6"
+]
+
+dependencies {
+	implementation(
+		[group: 'org.slf4j', name: 'slf4j-api', version: "${versions.slf4j}"],
+		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-analysis-common', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"],
+		[group: 'ch.qos.logback', name: 'logback-core', version: "${versions.logback}"],
+		[group: 'ch.qos.logback', name: 'logback-classic', version: "${versions.logback}"],
+		[group: 'com.google.guava', name: 'guava', version: '33.2.0-jre']
+	)
+
+	testImplementation(
+		[group: 'junit', name: 'junit', version: '4.13.2'],
+		[group: 'org.slf4j', name: 'slf4j-api', version: "${versions.slf4j}"],
+		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-analysis-common', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"]
+	)
+}
+
+task copyDictionary(type: Copy) {
+	from 'src/main/java'
+	into sourceSets.main.output.classesDirs.asPath
+	include '**/*.properties'
+	include '**/*.dic'
+	include '**/*.jflex'
+	include '**/*.txt'
+
+	includeEmptyDirs = false
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			artifactId = 'korean-analyzer-9.x'
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			url = uri("file://${System.getProperty('user.home')}/Programming/need4spd-maven-repo/snapshots")
+		}
+	}
+}
+
+tasks.compileJava.dependsOn copyDictionary
+tasks.compileTestJava.dependsOn copyDictionary
+tasks.test.dependsOn copyDictionary
+
+jacoco {
+	toolVersion = '0.8.12'
+}
+
+def changedLogicCoverageClasses = [
+	'com/tistory/devyongsik/analyzer/KoreanCompoundNounEngine.class',
+	'com/tistory/devyongsik/analyzer/KoreanNounFilter.class',
+	'com/tistory/devyongsik/analyzer/dictionary/DictionaryFactory.class',
+	'com/tistory/devyongsik/analyzer/dictionary/DictionaryFactory$DictionaryLoader.class',
+	'com/tistory/devyongsik/analyzer/dictionaryindex/SynonymDictionaryIndex.class'
+]
+
+tasks.withType(Test).configureEach {
+	finalizedBy tasks.jacocoTestReport
+	finalizedBy tasks.jacocoTestCoverageVerification
+}
+
+tasks.jacocoTestReport {
+	dependsOn tasks.test
+	reports {
+		xml.required = true
+		html.required = true
+	}
+	classDirectories.setFrom(files(classDirectories.files.collect {
+		fileTree(dir: it, include: changedLogicCoverageClasses)
+	}))
+}
+
+tasks.jacocoTestCoverageVerification {
+	dependsOn tasks.test
+	classDirectories.setFrom(files(classDirectories.files.collect {
+		fileTree(dir: it, include: changedLogicCoverageClasses)
+	}))
+	violationRules {
+		rule {
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.90
+			}
+		}
+	}
+}
+
+tasks.check.dependsOn tasks.jacocoTestCoverageVerification
