@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.TokenStream;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,11 +24,11 @@ public class KoreanCompoundNounEngineTest extends AnalyzerTestUtil {
 
 	@Before
 	public void initDictionary() {
-		compondNouns.add(getToken("분과위", 8, 11));
-		compondNouns.add(getToken("위원회", 5, 8));
-		compondNouns.add(getToken("조직", 3, 5));
-		compondNouns.add(getToken("월드컵", 0, 3));
 		compondNouns.add(getToken("월드컵조직위원회분과위", 0, 11));
+		compondNouns.add(getToken("월드컵", 0, 3));
+		compondNouns.add(getToken("조직", 3, 5));
+		compondNouns.add(getToken("위원회", 5, 8));
+		compondNouns.add(getToken("분과위", 8, 11));
 
 		dictionaryFactory = DictionaryFactory.getFactory();
 	}
@@ -58,7 +57,7 @@ public class KoreanCompoundNounEngineTest extends AnalyzerTestUtil {
 
 		stream.close();
 
-		verify(compondNouns, extractedTokens);
+		assertTokensExactly(compondNouns, extractedTokens);
 	}
 
 	@Test
@@ -82,6 +81,7 @@ public class KoreanCompoundNounEngineTest extends AnalyzerTestUtil {
 		stream.reset();
 
 		List<TestToken> expectedTokens = Lists.newArrayList();
+		expectedTokens.add(getToken("오늘", 0, 2));
 		expectedTokens.add(getToken("월드컵조직위원회분과위", 3, 14));
 		expectedTokens.add(getToken("월드컵", 3, 6));
 		expectedTokens.add(getToken("조직", 6, 8));
@@ -92,7 +92,7 @@ public class KoreanCompoundNounEngineTest extends AnalyzerTestUtil {
 
 		stream.close();
 
-		verify(expectedTokens, extractedTokens);
+		assertTokensExactly(expectedTokens, extractedTokens);
 	}
 
 	@Test
@@ -117,9 +117,12 @@ public class KoreanCompoundNounEngineTest extends AnalyzerTestUtil {
 
 		stream.close();
 
-		Assert.assertTrue(extractedTokens.contains(getToken("월드컵", 3, 6)));
-		Assert.assertFalse(extractedTokens.contains(getToken("없는명사", 2, 6)));
-		Assert.assertFalse(extractedTokens.contains(getToken("없는명사", -1, 3)));
+		List<TestToken> expectedTokens = Lists.newArrayList();
+		expectedTokens.add(getToken("오늘", 0, 2));
+		expectedTokens.add(getToken("월드컵조직위원회분과위", 3, 14));
+		expectedTokens.add(getToken("월드컵", 3, 6));
+
+		assertTokensExactly(expectedTokens, extractedTokens);
 	}
 
 	private void createEngines() {
