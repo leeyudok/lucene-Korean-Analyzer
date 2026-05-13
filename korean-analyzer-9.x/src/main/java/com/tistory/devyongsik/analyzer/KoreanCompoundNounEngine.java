@@ -20,8 +20,8 @@ public class KoreanCompoundNounEngine implements Engine {
 	private Map<String, List<String>> compoundNouns = new HashMap<String, List<String>>();
 
 	public KoreanCompoundNounEngine() {
-		if(logger.isInfoEnabled()) {
-			logger.info("init KoreanCompoundNounEngine");
+		if(logger.isDebugEnabled()) {
+			logger.debug("init KoreanCompoundNounEngine");
 		}
 
 		compoundNouns = DictionaryFactory.getFactory().getCompoundDictionaryMap();
@@ -48,7 +48,7 @@ public class KoreanCompoundNounEngine implements Engine {
 			for(String noun : matchedData) {
 
 				if(logger.isDebugEnabled()) {
-					logger.debug("복합명사추출 : " + noun);
+					logger.debug("복합명사추출 : {}", noun);
 				}
 
 				int relativeStartOffset = termString.indexOf(noun);
@@ -64,7 +64,7 @@ public class KoreanCompoundNounEngine implements Engine {
 
 				if(returnedTokens.containsKey(makeKeyForCheck)) {
 					if(logger.isDebugEnabled()) {
-						logger.debug("["+makeKeyForCheck+"] 는 이미 추출된 Token입니다. Skip");
+						logger.debug("[{}] 는 이미 추출된 Token입니다. Skip", makeKeyForCheck);
 					}
 
 					continue;

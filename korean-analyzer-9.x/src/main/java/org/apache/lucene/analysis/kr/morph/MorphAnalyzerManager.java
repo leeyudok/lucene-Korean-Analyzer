@@ -19,8 +19,12 @@ package org.apache.lucene.analysis.kr.morph;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class MorphAnalyzerManager {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MorphAnalyzerManager.class);
 
 	public void analyze(String strs) {
 		MorphAnalyzer analyzer = new MorphAnalyzer();
@@ -29,14 +33,10 @@ public class MorphAnalyzerManager {
 			try {
 				List<AnalysisOutput> results = analyzer.analyze(token);
 				for(AnalysisOutput o:results) {
-					System.out.print(o.toString()+"->");
-					for(int i=0;i<o.getCNounList().size();i++){
-						System.out.print(o.getCNounList().get(i)+"/");
-					}
-					System.out.println("<"+o.getScore()+">");
+					LOGGER.debug("{} -> {} <{}>", o, o.getCNounList(), o.getScore());
 				}
 			} catch (MorphException e) {
-				e.printStackTrace();
+				LOGGER.warn("Failed to analyze token '{}'.", token, e);
 			}
 		}
 	}

@@ -20,8 +20,11 @@ package org.apache.lucene.analysis.kr.utils;
 import org.apache.lucene.analysis.kr.morph.AnalysisOutput;
 import org.apache.lucene.analysis.kr.morph.MorphException;
 import org.apache.lucene.analysis.kr.morph.PatternConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Utilities {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Utilities.class);
 
 	public static String arrayToString(String[] strs) {
 		StringBuffer sb = new StringBuffer();
@@ -118,8 +121,7 @@ public class Utilities {
     * </p>
     * 
     * <p>
-    * If a <code>SecurityException</code> is caught, the return value is <code>null</code> and a message is written to
-    * <code>System.err</code>.
+    * If a <code>SecurityException</code> is caught, the return value is <code>null</code> and a message is logged.
     * </p>
     * 
     * @param property
@@ -131,8 +133,7 @@ public class Utilities {
            return System.getProperty(property);
        } catch (SecurityException ex) {
            // we are not allowed to look at this property
-           System.err.println("Caught a SecurityException reading the system property '" + property
-                   + "'; the SystemUtils property value will default to null.");
+           LOGGER.warn("Caught a SecurityException reading the system property '{}'; the SystemUtils property value will default to null.", property, ex);
            return null;
        }
    }  

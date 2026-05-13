@@ -27,46 +27,46 @@ public class KoreanMorphEngine implements Engine {
 
 	private MorphAnalyzer morph = null;
 	private Logger logger = LoggerFactory.getLogger(KoreanMorphEngine.class);
-		
+
 	public KoreanMorphEngine() {
-		
-		if(logger.isInfoEnabled()) {
-			logger.info("init KoreanMorphEngine");
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("init KoreanMorphEngine");
 		}
-		
+
 		morph = new MorphAnalyzer();
 	}
 
-	
+
 	@Override
 	public void collectNounState(AttributeSource attributeSource, List<ComparableState> comparableStateList, Map<String, String> returnedTokens)
 			throws Exception {
-		
+
 		CharTermAttribute termAttr = attributeSource.getAttribute(CharTermAttribute.class);
 		TypeAttribute typeAttr = attributeSource.getAttribute(TypeAttribute.class);
 		OffsetAttribute offSetAttr = attributeSource.getAttribute(OffsetAttribute.class);
-		
+
 		if(!typeAttr.type().equals("word")) {
 			if(logger.isDebugEnabled()) {
 				logger.debug("명사 분석 대상이 아닙니다.");
 			}
 			return;
 		}
-		
+
 		String term = termAttr.toString();
 		returnedTokens.put(term+"_"+offSetAttr.startOffset()+"_"+offSetAttr.endOffset(), "");
-		
+
 		try {
-	    	analysisKorean(attributeSource, comparableStateList, returnedTokens);	
-	 
-	    } catch (MorphException e) {
-	    	logger.error(e.getMessage());
-	    }
+			analysisKorean(attributeSource, comparableStateList, returnedTokens);
+
+		} catch (MorphException e) {
+			logger.error("Failed to analyze Korean term", e);
+		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void analysisKorean(AttributeSource attrSource, List<ComparableState> comparableStateList, Map<String, String> returnedTokens) throws MorphException {
-		
+
 		if(logger.isDebugEnabled())
 			logger.debug("analysisKorean");
 
@@ -75,8 +75,8 @@ public class KoreanMorphEngine implements Engine {
 
 		String input = termAttr.toString();
 
-		logger.info("morph engine input : " + input);
-		
+		logger.debug("morph engine input : {}", input);
+
 		List<AnalysisOutput> outputs = morph.analyze(input);
 
 		//AnalysisOutput에는 각각의 단어에 대해 형태소 정보가 다 들어가 있고 getStem은 명사만 가져옴
@@ -84,8 +84,8 @@ public class KoreanMorphEngine implements Engine {
 		//ex> (에서사랑하고,0,6,type=<KOREAN>) -> [에서사랑하(N),고(j)],[에서사랑(N),하고(j)],[에서사랑하고(N)]
 		if(logger.isDebugEnabled()) {
 			for(AnalysisOutput output : outputs) {
-				logger.debug("outputs : " + "["+ output.getStem() + "] : " + output.getScore());
-				logger.debug("outputs all info : " + "["+ output + "] : " + output.getPos());
+				logger.debug("outputs : [{}] : {}", output.getStem(), output.getScore());
+				logger.debug("outputs all info : [{}] : {}", output, output.getPos());
 			}
 		}
 
@@ -110,7 +110,7 @@ public class KoreanMorphEngine implements Engine {
 		}
 
 		Iterator<String> iter = map.keySet().iterator();
-		
+
 		State current = attrSource.captureState();
 
 		while(iter.hasNext()) {
@@ -126,31 +126,31 @@ public class KoreanMorphEngine implements Engine {
 				termAttrResult.setEmpty();
 				termAttrResult.append(text);
 
-			    PositionIncrementAttribute positionAttrResult = attrSource.addAttribute(PositionIncrementAttribute.class);
-			    positionAttrResult.setPositionIncrement(0);
+				PositionIncrementAttribute positionAttrResult = attrSource.addAttribute(PositionIncrementAttribute.class);
+				positionAttrResult.setPositionIncrement(0);
 
-			    OffsetAttribute offsetAttrResult = attrSource.addAttribute(OffsetAttribute.class);
-			    offsetAttrResult.setOffset(offsetAttr.startOffset() + (index!=-1?index:0), index!=-1?offsetAttr.startOffset()+index+text.length():offsetAttr.endOffset());
+				OffsetAttribute offsetAttrResult = attrSource.addAttribute(OffsetAttribute.class);
+				offsetAttrResult.setOffset(offsetAttr.startOffset() + (index!=-1?index:0), index!=-1?offsetAttr.startOffset()+index+text.length():offsetAttr.endOffset());
 
-			    TypeAttribute typeAttrResult = attrSource.addAttribute(TypeAttribute.class);
-			    typeAttrResult.setType("morph_noun");
+				TypeAttribute typeAttrResult = attrSource.addAttribute(TypeAttribute.class);
+				typeAttrResult.setType("morph_noun");
 
-			    String makeKeyForCheck = text + "_" + offsetAttrResult.startOffset() + "_" + offsetAttrResult.endOffset();
-				
+				String makeKeyForCheck = text + "_" + offsetAttrResult.startOffset() + "_" + offsetAttrResult.endOffset();
+
 				if(returnedTokens.containsKey(makeKeyForCheck)) {
 					if(logger.isDebugEnabled()) {
-						logger.debug("["+makeKeyForCheck+"] 는 이미 추출된 Token입니다. Skip");
+						logger.debug("[{}] 는 이미 추출된 Token입니다. Skip", makeKeyForCheck);
 					}
 				} else {
-					
+
 					ComparableState comparableState = new ComparableState();
 					comparableState.setState(attrSource.captureState());
 					comparableState.setStartOffset(offsetAttrResult.startOffset());
-					
+
 					comparableStateList.add(comparableState);
-					
+
 					if(logger.isDebugEnabled())
-						logger.debug("추출 된 명사 : [" + termAttrResult.toString() + "]");
+						logger.debug("추출 된 명사 : [{}]", termAttrResult);
 				}
 			}
 		}

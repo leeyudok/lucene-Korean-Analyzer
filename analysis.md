@@ -159,11 +159,11 @@ com/tistory/devyongsik/analyzer/dictionary.properties
 - 사전/설정 파일을 `src/main/resources`로 이동하고 `copyDictionary` 태스크 제거
 - `printStackTrace()` 제거 및 logger 기반 예외 전달
 - 테스트 유틸에 포함/정확/순서무시 토큰 검증 helper 추가 및 테스트 중 콘솔 출력 제거
+- 운영 정상 흐름 로그를 `debug`로 낮추고 콘솔 출력/스택트레이스를 SLF4J 로그로 정리
 - README와 분석 문서를 Lucene 9 단일 모듈 기준으로 갱신
 
 ## 남은 개선 후보
 
-- 운영 로그 정리: 사전 로딩과 분석 과정에 `info` 로그가 많습니다. 라이브러리 사용 시 기본 로그가 과도하지 않도록 정상 흐름은 `debug`, 진단이 필요한 상황은 `warn`/`error`로 조정할 수 있습니다.
 - 리소스 로딩 코드 단순화: 사전 파일이 `src/main/resources` 표준 classpath로 이동했으므로 `DictionaryFactory`, `KoreanEnv`, `FileUtil`의 과거 file/jar fallback 로직을 더 단순하고 명확하게 정리할 여지가 있습니다.
 - 예외 메시지 보강: `DictionaryProperties#getProperty()`는 누락된 property key에 대해 `trim()` 단계에서 NPE가 날 수 있습니다. 누락된 key와 설정 파일 맥락을 포함한 명확한 예외로 바꾸면 운영 진단이 쉬워집니다.
 - 레거시 TODO 정리: `Trie`의 불필요 노드 pruning, `StrBuilder` 필드 캡슐화처럼 오래 남아 있는 TODO가 있습니다. 기능 변경보다는 유지보수성 개선 성격으로 별도 정리할 수 있습니다.

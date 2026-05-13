@@ -27,6 +27,8 @@ import org.apache.lucene.analysis.kr.utils.DictionaryUtil;
 import org.apache.lucene.analysis.kr.utils.MorphUtil;
 import org.apache.lucene.analysis.kr.utils.SyllableUtil;
 import org.apache.lucene.analysis.kr.utils.VerbUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -34,6 +36,7 @@ import org.apache.lucene.analysis.kr.utils.VerbUtil;
  *
  */
 public class WordSpaceAnalyzer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(WordSpaceAnalyzer.class);
 
 	private MorphAnalyzer morphAnal;
 	
@@ -582,12 +585,15 @@ public class WordSpaceAnalyzer {
 	}
 	
 	private void printCandidate(WSOutput output) {
-		
+		if (!LOGGER.isDebugEnabled()) return;
+
 		List<AnalysisOutput> os = output.getPhrases();
+		StringBuilder candidates = new StringBuilder();
 		for(AnalysisOutput o : os) {
-			System.out.print(o.toString()+"("+o.getScore()+")| ");
+			candidates.append(o).append("(").append(o.getScore()).append(")| ");
 		}
-		System.out.println("<==");
+		candidates.append("<==");
+		LOGGER.debug("{}", candidates);
 		
 	}	
 }

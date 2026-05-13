@@ -34,8 +34,11 @@ import org.apache.lucene.analysis.kr.utils.MorphUtil;
 import org.apache.lucene.analysis.kr.utils.NounUtil;
 import org.apache.lucene.analysis.kr.utils.SyllableUtil;
 import org.apache.lucene.analysis.kr.utils.VerbUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MorphAnalyzer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MorphAnalyzer.class);
 
 	/**
 	 * starting word of sentence.
@@ -325,7 +328,7 @@ public class MorphAnalyzer {
 					   )
 				) 
 			{
-				System.out.println(entry.getWord());
+				LOGGER.debug("Matched verb entry: {}", entry.getWord());
 				AnalysisOutput output = o.clone();
 				output.setScore(AnalysisOutput.SCORE_CORRECT);
 				MorphUtil.buildPtnVM(output, candidates);
@@ -398,10 +401,8 @@ public class MorphAnalyzer {
 			  o.setScore(AnalysisOutput.SCORE_CORRECT);
 			  return true;
 		   }
-	   
+
 		   List<CompoundEntry> results = cnAnalyzer.analyze(o.getStem());
-//		   System.out.println(o);
-//		   for(CompoundEntry c :results) System.out.println(c.getWord()+":"+c.isExist());
 		   boolean success = false;
 		   
 		   if(results.size()>1) {		   

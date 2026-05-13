@@ -43,13 +43,13 @@ public class KoreanSynonymEngine implements Engine {
 	private List<String> getWords(String word) throws Exception {
 		List<String> synWordList = new ArrayList<String>();
 		if(logger.isDebugEnabled()) {
-			logger.debug("동의어 탐색 : " + word);
+			logger.debug("동의어 탐색 : {}", word);
 		}
 
 		Query query = new TermQuery(new Term("syn",word));
 
 		if(logger.isDebugEnabled()) {
-			logger.debug("query : " + query);
+			logger.debug("query : {}", query);
 		}
 		
 		SynonymDictionaryIndex indexingModule = SynonymDictionaryIndex.getIndexingModule();
@@ -61,9 +61,9 @@ public class KoreanSynonymEngine implements Engine {
 		ScoreDoc[] hits = topDocs.scoreDocs;
 
 		if(logger.isDebugEnabled()) {
-			logger.debug("대상 word : " + word);
+			logger.debug("대상 word : {}", word);
 			//검색된 document는 하나이므로..
-			logger.debug("동의어 갯수 : " + hits.length);
+			logger.debug("동의어 갯수 : {}", hits.length);
 		}
 
 		for(int i = 0; i < hits.length; i++) {
@@ -73,7 +73,7 @@ public class KoreanSynonymEngine implements Engine {
 
 			for(int j = 0; j < values.length; j++) {
 				if(logger.isDebugEnabled())
-					logger.debug("대상 word : " + "["+word+"]" + " 추출된 동의어 : " + values[j]);
+					logger.debug("대상 word : [{}] 추출된 동의어 : {}", word, values[j]);
 
 				if(!word.equals(values[j])) {
 					synWordList.add(values[j]);
@@ -95,7 +95,7 @@ public class KoreanSynonymEngine implements Engine {
 		returnedTokens.put(charTermAttr.toString()+"_"+offSetAttr.startOffset()+"_"+offSetAttr.endOffset(), "");
 
 		if(logger.isDebugEnabled())
-			logger.debug("넘어온 Term : " + charTermAttr.toString());
+			logger.debug("넘어온 Term : {}", charTermAttr);
 
 		List<String> synonyms = getWords(charTermAttr.toString());
 
@@ -109,7 +109,7 @@ public class KoreanSynonymEngine implements Engine {
 			if(returnedTokens.containsKey(makeKeyForCheck)) {
 
 				if(logger.isDebugEnabled()) {
-					logger.debug("["+makeKeyForCheck+"] 는 이미 추출된 Token입니다. Skip");
+					logger.debug("[{}] 는 이미 추출된 Token입니다. Skip", makeKeyForCheck);
 				}
 
 				continue;

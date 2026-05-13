@@ -22,8 +22,8 @@ public class KoreanLongestNounEngine implements Engine {
 	
 	
 	public KoreanLongestNounEngine() {
-		if(logger.isInfoEnabled()) {
-			logger.info("init KoreanLongestNounEngine");
+		if(logger.isDebugEnabled()) {
+			logger.debug("init KoreanLongestNounEngine");
 		}
 		
 		customNounsDic = DictionaryFactory.getFactory().getCustomNounDictionaryMap();
@@ -80,11 +80,11 @@ public class KoreanLongestNounEngine implements Engine {
 					String makeKeyForCheck = matchedTerm + "_" + startOffSet + "_" + endOffSet;
 					
 					if(returnedTokens.containsKey(makeKeyForCheck)) {
-						
+
 						if(logger.isDebugEnabled()) {
-							logger.debug("["+makeKeyForCheck+"] 는 이미 추출된 Token입니다. Skip");
+							logger.debug("[{}] 는 이미 추출된 Token입니다. Skip", makeKeyForCheck);
 						}
-						
+
 						matchedTerm = "";
 						
 						startIndex = prevMatchedEndIndex;

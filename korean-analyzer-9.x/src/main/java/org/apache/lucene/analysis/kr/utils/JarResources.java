@@ -21,12 +21,16 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * JarResources: JarResources maps all resources included in a
  * Zip or Jar file. Additionaly, it provides a method to extract one
  * as a blob.
  */
 public final class JarResources {
+   private static final Logger LOGGER = LoggerFactory.getLogger(JarResources.class);
 
    // external debug flag
    public boolean debugOn=false;
@@ -65,7 +69,7 @@ public final class JarResources {
           while (e.hasMoreElements()) {
               ZipEntry ze=(ZipEntry)e.nextElement();
               if (debugOn) {
-                 System.out.println(dumpZipEntry(ze));
+                 LOGGER.debug("{}", dumpZipEntry(ze));
               }
               htSizes.put(ze.getName(),new Integer((int)ze.getSize()));
           }
@@ -81,9 +85,7 @@ public final class JarResources {
                 continue;
              }
              if (debugOn) {
-                System.out.println(
-                   "ze.getName()="+ze.getName()+","+"getSize()="+ze.getSize()
-                   );
+                LOGGER.debug("ze.getName()={},getSize()={}", ze.getName(), ze.getSize());
              }
              int size=(int)ze.getSize();
              // -1 means unknown size. 
@@ -102,11 +104,7 @@ public final class JarResources {
              }
 
              if (debugOn) {
-                System.out.println(
-                   ze.getName()+"  rb="+rb+
-                   ",size="+size+
-                   ",csize="+ze.getCompressedSize()
-                   );
+                LOGGER.debug("{}  rb={},size={},csize={}", ze.getName(), rb, size, ze.getCompressedSize());
              }
              
              if(ze.getName().equals(name))	{
@@ -114,11 +112,11 @@ public final class JarResources {
              }
           }
        } catch (NullPointerException e) {
-          System.out.println("done.");
+          LOGGER.warn("Unable to read jar resource '{}' from '{}'.", name, jarFileName, e);
        } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          LOGGER.warn("Jar file '{}' was not found while reading resource '{}'.", jarFileName, name, e);
        } catch (IOException e) {
-          e.printStackTrace();
+          LOGGER.warn("I/O error reading jar resource '{}' from '{}'.", name, jarFileName, e);
        }
        
        return null;

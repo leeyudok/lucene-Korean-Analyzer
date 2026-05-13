@@ -25,14 +25,14 @@ public class DictionaryProperties {
 
 	private void loadDefaultProperties() {
 		if(logger.isDebugEnabled())
-			logger.debug("load analyzer default properties..... : " + defaultResourceName);
+			logger.debug("load analyzer default properties..... : {}", defaultResourceName);
 
 		Class<DictionaryProperties> clazz = DictionaryProperties.class;
 		
 		InputStream in = clazz.getClassLoader().getResourceAsStream(defaultResourceName);
 		
 		if(in == null) {
-			logger.error(defaultResourceName + " was not found!!!");
+			logger.error("{} was not found!!!", defaultResourceName);
 			throw new IllegalStateException(defaultResourceName + " was not found!!!");
 		}
 
@@ -40,24 +40,24 @@ public class DictionaryProperties {
 			defaultProp.load(in);
 			in.close();
 		} catch (IOException e) {
-			logger.error(e.toString());
+			logger.error("Failed to load default properties: {}", defaultResourceName, e);
 		}
-		
-		if(logger.isInfoEnabled()) {
-			logger.info("default dictionary.properties : " + defaultProp);
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("default dictionary.properties : {}", defaultProp);
 		}
 	}
 
 	private void loadCustomProperties() {
 		if(logger.isDebugEnabled())
-			logger.debug("load analyzer custom properties..... : " + resourceName);
+			logger.debug("load analyzer custom properties..... : {}", resourceName);
 
 		Class<DictionaryProperties> clazz = DictionaryProperties.class;
 		
 		InputStream in = clazz.getClassLoader().getResourceAsStream(resourceName);
-		
+
 		if(in == null) {
-			logger.warn(customProp + " was not found!!! skip load custom properties");
+			logger.warn("{} was not found!!! skip load custom properties", resourceName);
 			return;
 		}
 
@@ -65,11 +65,11 @@ public class DictionaryProperties {
 			customProp.load(in);
 			in.close();
 		} catch (IOException e) {
-			logger.error(e.toString());
+			logger.error("Failed to load custom properties: {}", resourceName, e);
 		}
-		
-		if(logger.isInfoEnabled()) {
-			logger.info("custom dictionary.properties : " + customProp);
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("custom dictionary.properties : {}", customProp);
 		}
 	}
 	

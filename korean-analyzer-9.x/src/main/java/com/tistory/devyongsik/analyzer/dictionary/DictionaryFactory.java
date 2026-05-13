@@ -85,8 +85,8 @@ public class DictionaryFactory {
 			DictionaryType[] dictionaryTypes = DictionaryType.values();
 
 			for(DictionaryType dictionaryType : dictionaryTypes) {
-				if(logger.isInfoEnabled()) {
-					logger.info("["+dictionaryType.getDescription()+"] "+"create wordset from file");
+				if(logger.isDebugEnabled()) {
+					logger.debug("[{}] create wordset from file", dictionaryType.getDescription());
 				}
 
 				List<String> dictionary = loadDictionary(dictionaryType);
@@ -126,11 +126,11 @@ public class DictionaryFactory {
 			InputStream inputStream = DictionaryFactory.class.getClassLoader().getResourceAsStream(dictionaryFile);
 
 			if(inputStream == null) {
-				logger.info("couldn't find dictionary : " + dictionaryFile);
+				logger.debug("couldn't find dictionary : {}", dictionaryFile);
 
 				inputStream = DictionaryFactory.class.getResourceAsStream(dictionaryFile);
 
-				logger.info(dictionaryFile + " file loaded.. from classloader.");
+				logger.debug("{} file loaded.. from classloader.", dictionaryFile);
 			}
 
 			if(inputStream == null) {
@@ -148,22 +148,22 @@ public class DictionaryFactory {
 					words.add(readWord.trim());
 				}
 
-				if(logger.isInfoEnabled()) {
-					logger.info(name.getDescription() + " : " + words.size());
+				if(logger.isDebugEnabled()) {
+					logger.debug("{} : {}", name.getDescription(), words.size());
 				}
 
-				if(logger.isInfoEnabled()) {
-					logger.info("create wordset from file complete");
+				if(logger.isDebugEnabled()) {
+					logger.debug("create wordset from file complete");
 				}
 
 			}catch(IOException e){
-				logger.error(e.toString());
+				logger.error("Failed to load dictionary: {}", dictionaryFile, e);
 			}finally{
 				if(in != null) {
 					try {
 						in.close();
 					} catch (IOException e) {
-						logger.error(e.toString());
+						logger.error("Failed to close dictionary reader: {}", dictionaryFile, e);
 					}
 				}
 			}

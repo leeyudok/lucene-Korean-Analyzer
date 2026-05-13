@@ -83,7 +83,7 @@ public class SynonymDictionaryIndex {
 
 			indexWriter.commit();
 
-			logger.info("동의어 색인 단어 갯수 : {}", recordCnt);
+			logger.debug("동의어 색인 단어 갯수 : {}", recordCnt);
 
 		} catch (Exception e) {
 			throw new IllegalStateException("Failed to index synonym dictionary", e);

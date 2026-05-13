@@ -102,9 +102,6 @@ public class WSOutput  implements Cloneable {
 		String source = o.getSource();		
 		int rmstemlen = 0;
 		
-//		for(int i=0;i<cnouns.size();i++) {
-//			System.out.println(cnouns.get(i).getWord());
-//		}
 		for(int i=0;i<cnouns.size()-1;i++) {
 			
 			String noun = cnouns.get(i).getWord();			

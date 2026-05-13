@@ -2240,7 +2240,6 @@ public class StrBuilder implements Cloneable {
 //                new Object[] {new Integer(0), new Integer(size), buffer});
 //            
 //        } catch (Exception ex) {
-//            ex.printStackTrace();
 //            throw new UnsupportedOperationException("StrBuilder.toSharedString is unsupported: " + ex.getMessage());
 //        }
 //    }

@@ -24,8 +24,8 @@ public class KoreanStopFilter extends TokenFilter {
 	protected KoreanStopFilter(TokenStream input) {
 		super(input);
 		
-		if(logger.isInfoEnabled()) {
-			logger.info("init KoreanStopFilter");
+		if(logger.isDebugEnabled()) {
+			logger.debug("init KoreanStopFilter");
 		}
 		charTermAtt = getAttribute(CharTermAttribute.class);
 		posIncrAtt = getAttribute(PositionIncrementAttribute.class);
@@ -55,7 +55,7 @@ public class KoreanStopFilter extends TokenFilter {
 		while(input.incrementToken()) {
 
 			if(logger.isDebugEnabled())
-				logger.debug("원래 리턴 될 TermAtt : " + charTermAtt.toString() + " , stopWordDic.isExist : " + stopWordsMap.containsKey(charTermAtt.toString()));
+				logger.debug("원래 리턴 될 TermAtt : {} , stopWordDic.isExist : {}", charTermAtt, stopWordsMap.containsKey(charTermAtt.toString()));
 
 			if(!stopWordsMap.containsKey(charTermAtt.toString())) {
 				if(enablePositionIncrements) {
