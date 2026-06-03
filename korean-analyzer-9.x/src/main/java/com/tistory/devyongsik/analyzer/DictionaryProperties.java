@@ -80,11 +80,17 @@ public class DictionaryProperties {
 	public String getProperty(String key) {
 		//read property value from custom properties first
 		String value = customProp.getProperty(key);
-		
+
 		if(value == null) {
 			value = defaultProp.getProperty(key);
 		}
-		
+
+		if(value == null) {
+			throw new IllegalArgumentException(
+					"Dictionary property key '" + key + "' was not found in custom resource '" + resourceName
+							+ "' or default resource '" + defaultResourceName + "'.");
+		}
+
 		return value.trim();
 	}
 }

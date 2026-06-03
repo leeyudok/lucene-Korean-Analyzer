@@ -58,6 +58,18 @@ public class DictionaryPropertiesTest {
 		}
 	}
 
+	@Test
+	public void missingDictionaryPropertyReportsKeyAndResources() {
+		try {
+			DictionaryProperties.getInstance().getProperty("missing.dictionary.key");
+			Assert.fail("Expected IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(e.getMessage().contains("missing.dictionary.key"));
+			Assert.assertTrue(e.getMessage().contains("dictionary.properties"));
+			Assert.assertTrue(e.getMessage().contains("com/tistory/devyongsik/analyzer/dictionary.properties"));
+		}
+	}
+
 	private Properties loadProperties(ClassLoader loader, String resource) throws Exception {
 		InputStream inputStream = loader.getResourceAsStream(resource);
 		Assert.assertNotNull(resource + " should exist on the classpath", inputStream);

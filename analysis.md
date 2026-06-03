@@ -161,9 +161,9 @@ com/tistory/devyongsik/analyzer/dictionary.properties
 - 테스트 유틸에 포함/정확/순서무시 토큰 검증 helper 추가 및 테스트 중 콘솔 출력 제거
 - 운영 정상 흐름 로그를 `debug`로 낮추고 콘솔 출력/스택트레이스를 SLF4J 로그로 정리
 - 사전/설정 로딩을 classpath 리소스 중심으로 단순화하고 file/jar 직접 fallback 및 미사용 `JarResources` 제거
+- `DictionaryProperties#getProperty()`의 누락 key 예외 메시지에 key와 설정 리소스 맥락을 포함하도록 보강
 - README와 분석 문서를 Lucene 9 단일 모듈 기준으로 갱신
 
 ## 남은 개선 후보
 
-- 예외 메시지 보강: `DictionaryProperties#getProperty()`는 누락된 property key에 대해 `trim()` 단계에서 NPE가 날 수 있습니다. 누락된 key와 설정 파일 맥락을 포함한 명확한 예외로 바꾸면 운영 진단이 쉬워집니다.
 - 레거시 TODO 정리: `Trie`의 불필요 노드 pruning, `StrBuilder` 필드 캡슐화처럼 오래 남아 있는 TODO가 있습니다. 기능 변경보다는 유지보수성 개선 성격으로 별도 정리할 수 있습니다.
