@@ -18,9 +18,8 @@ package org.apache.lucene.analysis.kr.utils;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.lucene.analysis.kr.morph.MorphException;
@@ -66,7 +65,7 @@ public class KoreanEnv {
 			initDefaultProperties();
 			props = loadProperties(defaults);
 		} catch (MorphException e) {
-			throw new MorphException ("Failure while initializing property values:\n"+e.getMessage());
+			throw new MorphException("Failure while initializing property values", e);
 		}
 	}
 	
@@ -111,18 +110,14 @@ public class KoreanEnv {
 			properties = new Properties(def);
 		}
 
-		File file = null;
-		try {
-			file = FileUtil.getClassLoaderFile(FILE_KOREAN_PROPERTY);
-			if (file != null) {
-				properties.load(new FileInputStream(file));
-				return properties;
+		try (InputStream inputStream = KoreanEnv.class.getClassLoader().getResourceAsStream(FILE_KOREAN_PROPERTY)) {
+			if (inputStream == null) {
+				throw new MorphException("Unable to find classpath properties resource: " + FILE_KOREAN_PROPERTY);
 			}
-			
-			byte[] in = FileUtil.readByteFromCurrentJar(FILE_KOREAN_PROPERTY);
-			properties.load(new ByteArrayInputStream(in));
-		} catch (Exception e) {
-			throw new MorphException("Failure while trying to load properties file " + file.getPath(), e);
+
+			properties.load(inputStream);
+		} catch (IOException e) {
+			throw new MorphException("Failure while trying to load properties resource: " + FILE_KOREAN_PROPERTY, e);
 		}
 		return properties;
 	}

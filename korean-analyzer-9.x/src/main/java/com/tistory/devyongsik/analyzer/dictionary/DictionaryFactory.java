@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -121,28 +122,14 @@ public class DictionaryFactory {
 
 		private List<String> loadDictionary(DictionaryType name) {
 
-			BufferedReader in = null;
 			String dictionaryFile = DictionaryProperties.getInstance().getProperty(name.getPropertiesKey());
-			InputStream inputStream = DictionaryFactory.class.getClassLoader().getResourceAsStream(dictionaryFile);
-
-			if(inputStream == null) {
-				logger.debug("couldn't find dictionary : {}", dictionaryFile);
-
-				inputStream = DictionaryFactory.class.getResourceAsStream(dictionaryFile);
-
-				logger.debug("{} file loaded.. from classloader.", dictionaryFile);
-			}
-
-			if(inputStream == null) {
-				throw new IllegalStateException("Dictionary resource was not found: " + dictionaryFile);
-			}
-
 			List<String> words = new ArrayList<String>();
 
-			try {
+			try (
+					InputStream inputStream = openResource(dictionaryFile);
+					BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+			) {
 				String readWord = "";
-				in = new BufferedReader( new InputStreamReader(inputStream ,"utf-8"));
-
 
 				while( (readWord = in.readLine()) != null ) {
 					words.add(readWord.trim());
@@ -157,18 +144,20 @@ public class DictionaryFactory {
 				}
 
 			}catch(IOException e){
-				logger.error("Failed to load dictionary: {}", dictionaryFile, e);
-			}finally{
-				if(in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-						logger.error("Failed to close dictionary reader: {}", dictionaryFile, e);
-					}
-				}
+				throw new IllegalStateException("Failed to load dictionary resource: " + dictionaryFile, e);
 			}
 
 			return words;
+		}
+
+		private InputStream openResource(String dictionaryFile) {
+			InputStream inputStream = DictionaryFactory.class.getClassLoader().getResourceAsStream(dictionaryFile);
+
+			if(inputStream == null) {
+				throw new IllegalStateException("Dictionary resource was not found: " + dictionaryFile);
+			}
+
+			return inputStream;
 		}
 	}
 

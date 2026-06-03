@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import junit.framework.Assert;
 
+import org.apache.lucene.analysis.kr.morph.MorphException;
 import org.apache.lucene.analysis.kr.utils.FileUtil;
 import org.apache.lucene.analysis.kr.utils.KoreanEnv;
 import org.junit.Test;
@@ -45,6 +46,16 @@ public class DictionaryPropertiesTest {
 
 		Assert.assertEquals("org/apache/lucene/analysis/kr/dic/total.dic", dictionaryPath);
 		Assert.assertTrue(dictionaryLines.size() > 0);
+	}
+
+	@Test
+	public void missingClasspathResourceReportsResourceName() throws Exception {
+		try {
+			FileUtil.readLines("missing-resource.dic", "UTF-8");
+			Assert.fail("Expected MorphException");
+		} catch (MorphException e) {
+			Assert.assertTrue(e.getMessage().contains("Unable to find classpath resource missing-resource.dic"));
+		}
 	}
 
 	private Properties loadProperties(ClassLoader loader, String resource) throws Exception {

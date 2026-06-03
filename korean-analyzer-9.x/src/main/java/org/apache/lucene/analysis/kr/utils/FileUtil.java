@@ -18,7 +18,6 @@ package org.apache.lucene.analysis.kr.utils;
  */
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,10 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,38 +37,6 @@ import org.apache.lucene.analysis.kr.morph.MorphException;
  */
 public class FileUtil {
 
-	
-	/**
-	 * Given a file name for a file that is located somewhere in the application
-	 * classpath, return a File object representing the file.
-	 *
-	 * @param filename The name of the file (relative to the classpath) that is
-	 *  to be retrieved.
-	 * @return A file object representing the requested filename
-	 * @throws Exception Thrown if the classloader can not be found or if
-	 *  the file can not be found in the classpath.
-	 */
-	public static File getClassLoaderFile(String filename) throws MorphException  {
-		// note that this method is used when initializing logging, so it must
-		// not attempt to log anything.
-		File file = null;
-		ClassLoader loader = FileUtil.class.getClassLoader();
-		URL url = loader.getResource(filename);
-		if (url == null) {
-			url = ClassLoader.getSystemResource(filename);
-			if (url == null) {
-				throw new MorphException("Unable to find " + filename);
-			}
-			file = toFile(url);
-		} else {
-			file = toFile(url);
-		}
-		if (file==null||!file.exists()) {
-			return null;
-		}
-		return file;
-	}
-	
     /**
      * Reads the contents of a file line by line to a List of Strings.
      * The file is always closed.
@@ -109,16 +72,14 @@ public class FileUtil {
      * @since Commons IO 1.1
      */
     public static List readLines(String fName, String encoding) throws MorphException, IOException  {
-        InputStream in = null;        
+        InputStream in = null;
         try {
+            in = FileUtil.class.getClassLoader().getResourceAsStream(fName);
 
-        	File file = getClassLoaderFile(fName);
-        	if(file!=null&&file.exists()) {
-        		in = openInputStream(file);
-        	} else {
-        		in = new ByteArrayInputStream(readByteFromCurrentJar(fName));
-        	}
-      	
+            if(in == null) {
+                throw new MorphException("Unable to find classpath resource " + fName);
+            }
+
             return readLines(in, encoding);
         } finally {
             closeQuietly(in);
@@ -245,40 +206,6 @@ public class FileUtil {
             // ignore
         }
     }
-    
-    
-
-    //-----------------------------------------------------------------------
-    /**
-     * Convert from a <code>URL</code> to a <code>File</code>.
-     * <p>
-     * From version 1.1 this method will decode the URL.
-     * Syntax such as <code>file:///my%20docs/file.txt</code> will be
-     * correctly decoded to <code>/my docs/file.txt</code>.
-     *
-     * @param url  the file URL to convert, <code>null</code> returns <code>null</code>
-     * @return the equivalent <code>File</code> object, or <code>null</code>
-     *  if the URL's protocol is not <code>file</code>
-     * @throws IllegalArgumentException if the file is incorrectly encoded
-     */
-    public static File toFile(URL url) {
-        if (url == null || !url.getProtocol().equals("file")) {
-            return null;
-        } else {
-            String filename = url.getFile().replace('/', File.separatorChar);
-            int pos =0;
-            while ((pos = filename.indexOf('%', pos)) >= 0) {
-                if (pos + 2 < filename.length()) {
-                    String hexStr = filename.substring(pos + 1, pos + 3);
-                    char ch = (char) Integer.parseInt(hexStr, 16);
-                    filename = filename.substring(0, pos) + ch + filename.substring(pos + 3);
-                }
-            }
-            return new File(filename);
-        }
-    }
-    
-
     //-----------------------------------------------------------------------
     /**
      * Reads the contents of a file into a String.
@@ -296,21 +223,8 @@ public class FileUtil {
             in = openInputStream(file);
             return StringUtil.toString(in, encoding);
         } finally {
-        	closeQuietly(in);
+            closeQuietly(in);
         }
     }
-    
-
-	public static byte[] readByteFromCurrentJar(String resource) throws MorphException {
-
-		String	jarPath = FileUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-
-		JarResources jar = new JarResources(jarPath);
-		try {	
-			return jar.getResource(resource);
-		} catch (Exception e) {
-			throw new MorphException(e.getMessage(),e);
-		}
-	}
 	
 }
