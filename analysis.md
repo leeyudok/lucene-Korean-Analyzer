@@ -164,6 +164,6 @@ com/tistory/devyongsik/analyzer/dictionary.properties
 - `DictionaryProperties#getProperty()`의 누락 key 예외 메시지에 key와 설정 리소스 맥락을 포함하도록 보강
 - README와 분석 문서를 Lucene 9 단일 모듈 기준으로 갱신
 
-## 남은 개선 후보
+## 보류 항목
 
-- 레거시 TODO 정리: `Trie`의 불필요 노드 pruning, `StrBuilder` 필드 캡슐화처럼 오래 남아 있는 TODO가 있습니다. 기능 변경보다는 유지보수성 개선 성격으로 별도 정리할 수 있습니다.
+- 레거시 TODO 정리 보류: `Trie`의 불필요 노드 pruning, `StrBuilder` 필드 캡슐화 TODO는 `org.apache.lucene.analysis.kr.utils` 아래에 vendoring/copy 되어 들어온 외부 유틸 성격의 코드에 남아 있습니다. 원본 추적성과 API 호환성을 고려하면 analyzer 로직 변경 작업에서 직접 수정하지 않는 편이 안전합니다.
