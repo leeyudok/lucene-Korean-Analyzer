@@ -14,6 +14,8 @@ korean-analyzer-9.x  — Java 11 / Lucene 9.10.0
 korean-analyzer-8.x  — Java 8  / Lucene 8.11.4 (Java 8 제약 환경용)
 ```
 
+8.x 모듈의 빌드 방법과 배포 시 필요한 런타임 의존성 목록은 [`korean-analyzer-8.x/README.md`](korean-analyzer-8.x/README.md)를 참고하세요.
+
 ## Build
 
 ```bash
