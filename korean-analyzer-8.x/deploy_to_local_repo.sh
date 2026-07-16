@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-../gradlew :korean-analyzer-9.x:publish
+../gradlew :korean-analyzer-8.x:publish
