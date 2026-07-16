@@ -5,12 +5,13 @@ Lucene Analyzer For Korean
 
 이수명님의 Analyzer(http://cafe.naver.com/korlucene)를 형태소 분석 Filter 형태로 변형하고, 동의어 Filter와 복합명사 Filter 등을 추가한 Lucene용 한글 분석기입니다.
 
-현재 프로젝트는 Java 11과 Lucene 9.10.0 기준의 단일 모듈로 관리합니다.
+Lucene 메이저 버전 라인별로 모듈을 나누어 관리합니다.
 
-## Module
+## Modules
 
 ```text
-korean-analyzer-9.x
+korean-analyzer-9.x  — Java 11 / Lucene 9.10.0
+korean-analyzer-8.x  — Java 8  / Lucene 8.11.4 (Java 8 제약 환경용)
 ```
 
 ## Build

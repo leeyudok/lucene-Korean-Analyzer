@@ -1,0 +1,96 @@
+package com.tistory.devyongsik.analyzer;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class DictionaryProperties {
+	private Logger logger = LoggerFactory.getLogger(DictionaryProperties.class);
+	
+	private static DictionaryProperties instance = new DictionaryProperties();
+
+	private Properties defaultProp = new Properties();
+	private Properties customProp = new Properties();
+	
+	private String resourceName = "dictionary.properties";
+	private final String defaultResourceName = "com/tistory/devyongsik/analyzer/dictionary.properties";
+
+	private DictionaryProperties() {
+		loadDefaultProperties();
+		loadCustomProperties();
+	}
+
+	private void loadDefaultProperties() {
+		if(logger.isDebugEnabled())
+			logger.debug("load analyzer default properties..... : {}", defaultResourceName);
+
+		Class<DictionaryProperties> clazz = DictionaryProperties.class;
+		
+		InputStream in = clazz.getClassLoader().getResourceAsStream(defaultResourceName);
+		
+		if(in == null) {
+			logger.error("{} was not found!!!", defaultResourceName);
+			throw new IllegalStateException(defaultResourceName + " was not found!!!");
+		}
+
+		try {
+			defaultProp.load(in);
+			in.close();
+		} catch (IOException e) {
+			logger.error("Failed to load default properties: {}", defaultResourceName, e);
+		}
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("default dictionary.properties : {}", defaultProp);
+		}
+	}
+
+	private void loadCustomProperties() {
+		if(logger.isDebugEnabled())
+			logger.debug("load analyzer custom properties..... : {}", resourceName);
+
+		Class<DictionaryProperties> clazz = DictionaryProperties.class;
+		
+		InputStream in = clazz.getClassLoader().getResourceAsStream(resourceName);
+
+		if(in == null) {
+			logger.warn("{} was not found!!! skip load custom properties", resourceName);
+			return;
+		}
+
+		try {
+			customProp.load(in);
+			in.close();
+		} catch (IOException e) {
+			logger.error("Failed to load custom properties: {}", resourceName, e);
+		}
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("custom dictionary.properties : {}", customProp);
+		}
+	}
+	
+	public static DictionaryProperties getInstance() {
+		return instance;
+	}
+
+	public String getProperty(String key) {
+		//read property value from custom properties first
+		String value = customProp.getProperty(key);
+
+		if(value == null) {
+			value = defaultProp.getProperty(key);
+		}
+
+		if(value == null) {
+			throw new IllegalArgumentException(
+					"Dictionary property key '" + key + "' was not found in custom resource '" + resourceName
+							+ "' or default resource '" + defaultResourceName + "'.");
+		}
+
+		return value.trim();
+	}
+}

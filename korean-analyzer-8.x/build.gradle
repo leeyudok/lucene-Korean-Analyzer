@@ -6,12 +6,12 @@ group = 'com.tistory.devyongsik'
 version = '0.9-SNAPSHOT'
 
 base {
-	archivesName = 'korean-analyzer-9.x'
+	archivesName = 'korean-analyzer-8.x'
 }
 
-java {
-	sourceCompatibility = JavaVersion.VERSION_11
-	targetCompatibility = JavaVersion.VERSION_11
+// 은행 등 Java 8 환경용 — Lucene 8.11.4는 Java 8을 지원하는 마지막 라인
+tasks.withType(JavaCompile).configureEach {
+	options.release = 8
 }
 
 repositories {
@@ -19,16 +19,16 @@ repositories {
 }
 
 def versions = [
-    lucene  : "9.10.0",
-    slf4j   : "2.0.13",
-    logback : "1.5.6"
+    lucene  : "8.11.4",
+    slf4j   : "1.7.36",
+    logback : "1.2.13"
 ]
 
 dependencies {
 	implementation(
 		[group: 'org.slf4j', name: 'slf4j-api', version: "${versions.slf4j}"],
 		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
-		[group: 'org.apache.lucene', name: 'lucene-analysis-common', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: "${versions.lucene}"],
 		[group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
 		[group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"],
 		[group: 'ch.qos.logback', name: 'logback-core', version: "${versions.logback}"],
@@ -40,7 +40,7 @@ dependencies {
 		[group: 'junit', name: 'junit', version: '4.13.2'],
 		[group: 'org.slf4j', name: 'slf4j-api', version: "${versions.slf4j}"],
 		[group: 'org.apache.lucene', name: 'lucene-core', version: "${versions.lucene}"],
-		[group: 'org.apache.lucene', name: 'lucene-analysis-common', version: "${versions.lucene}"],
+		[group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: "${versions.lucene}"],
 		[group: 'org.apache.lucene', name: 'lucene-queries', version: "${versions.lucene}"],
 		[group: 'org.apache.lucene', name: 'lucene-queryparser', version: "${versions.lucene}"]
 	)
@@ -49,7 +49,7 @@ dependencies {
 publishing {
 	publications {
 		maven(MavenPublication) {
-			artifactId = 'korean-analyzer-9.x'
+			artifactId = 'korean-analyzer-8.x'
 			from components.java
 		}
 	}

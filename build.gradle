@@ -14,10 +14,7 @@ subprojects {
         }
     }
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+    // Java 버전은 모듈별로 설정한다 (8.x: release 8, 9.x: Java 11)
     [compileJava, compileTestJava]*.options*.encoding = javaEncoding
 
     repositories {
